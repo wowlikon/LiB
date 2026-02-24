@@ -104,6 +104,8 @@ def update_genre(
 
     update_data = genre.model_dump(exclude_unset=True)
     for field, value in update_data.items():
+        if value is None:
+            continue
         setattr(db_genre, field, value)
 
     session.commit()

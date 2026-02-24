@@ -25,7 +25,7 @@ class AuthorCreate(AuthorBase):
 class AuthorUpdate(SQLModel):
     """Модель автора для обновления"""
 
-    name: str | None = Field(None, description="Псевдоним")
+    name: str | None = Field(None, description="Псевдоним", schema_extra={"examples": [None]})
 
 
 class AuthorRead(AuthorBase):

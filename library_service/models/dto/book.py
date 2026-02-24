@@ -35,10 +35,10 @@ class BookCreate(BookBase):
 class BookUpdate(SQLModel):
     """Модель книги для обновления"""
 
-    title: str | None = Field(None, description="Название")
-    description: str | None = Field(None, description="Описание")
-    page_count: int | None = Field(None, description="Количество страниц")
-    status: BookStatus | None = Field(None, description="Статус")
+    title: str | None = Field(None, description="Название", schema_extra={"examples": [None]})
+    description: str | None = Field(None, description="Описание", schema_extra={"examples": [None]})
+    page_count: int | None = Field(None, description="Количество страниц", schema_extra={"examples": [None]})
+    status: BookStatus | None = Field(None, description="Статус", schema_extra={"examples": [None]})
 
 
 class BookRead(BookBase):

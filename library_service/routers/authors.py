@@ -105,6 +105,8 @@ def update_author(
 
     update_data = author.model_dump(exclude_unset=True)
     for field, value in update_data.items():
+        if value is None:
+            continue
         setattr(db_author, field, value)
 
     session.commit()

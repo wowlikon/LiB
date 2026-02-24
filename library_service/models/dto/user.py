@@ -71,9 +71,9 @@ class UserRead(UserBase):
 class UserUpdate(SQLModel):
     """Модель пользователя для обновления"""
 
-    email: EmailStr | None = Field(None, description="Email")
-    full_name: str | None = Field(None, description="Полное имя")
-    password: str | None = Field(None, description="Пароль")
+    email: EmailStr | None = Field(None, description="Email", schema_extra={"examples": [None]})
+    full_name: str | None = Field(None, description="Полное имя", schema_extra={"examples": [None]})
+    password: str | None = Field(None, description="Пароль", schema_extra={"examples": [None]})
 
 
 class UserList(SQLModel):

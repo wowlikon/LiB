@@ -62,7 +62,12 @@ from sqlalchemy import select, func, distinct, case, exists
 from sqlalchemy.orm import selectinload
 
 
-@router.get("/filter", response_model=BookFilteredList)
+@router.get(
+    "/filter",
+    response_model=BookFilteredList,
+    summary="Поиск по книгам",
+    description="Фильтрует и ищет книги",
+)
 def filter_books(
     current_user: OptionalAuth,
     session: Session = Depends(get_session),
@@ -74,6 +79,7 @@ def filter_books(
     page: int = Query(1, gt=0),
     size: int = Query(20, gt=0, le=100),
 ):
+    """Выполняет поиск книги в системе"""
     statement = select(Book).options(
         selectinload(Book.authors), selectinload(Book.genres), defer(Book.embedding) # ty: ignore
     )
@@ -315,13 +321,18 @@ def delete_book(
     session.commit()
     return book_read
 
-@router.post("/{book_id}/preview")
+@router.post(
+    "/{book_id}/preview",
+    summary="Утановить обложку книги",
+    description="Меняет обложку книги в системе",
+)
 async def upload_book_preview(
     current_user: RequireStaff,
     file: UploadFile = File(...),
     book_id: int = Path(..., gt=0),
     session: Session = Depends(get_session)
 ):
+    """Загружает обложку книги в систему"""
     if not (file.content_type or "").startswith("image/"):
         raise HTTPException(
             status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
@@ -369,12 +380,17 @@ async def upload_book_preview(
         }
 
 
-@router.delete("/{book_id}/preview")
+@router.delete(
+    "/{book_id}/preview",
+    summary="Удалить обложку книги",
+    description="Удаляет обложку книги в системе",
+)
 async def remove_book_preview(
     current_user: RequireStaff,
     book_id: int = Path(..., gt=0),
     session: Session = Depends(get_session)
 ):
+    """Убирает обложку книги в системе"""
     book = session.get(Book, book_id)
     if not book:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Book not found")

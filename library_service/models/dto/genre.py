@@ -25,7 +25,7 @@ class GenreCreate(GenreBase):
 class GenreUpdate(SQLModel):
     """Модель жанра для обновления"""
 
-    name: str | None = Field(None, description="Название")
+    name: str | None = Field(None, description="Название", schema_extra={"examples": [None]})
 
 
 class GenreRead(GenreBase):

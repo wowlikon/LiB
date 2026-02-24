@@ -104,7 +104,7 @@ class UserUpdateByAdmin(UserUpdate):
     """Обновление пользователя администратором"""
 
     is_active: bool = Field(True, description="Не является ли заблокированным")
-    roles: list[str] | None = Field(None, description="Роли")
+    roles: list[str] | None = Field(None, description="Роли", schema_extra={"examples": [None]})
 
 
 class LoginResponse(SQLModel):
