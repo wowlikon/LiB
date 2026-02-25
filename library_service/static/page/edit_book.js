@@ -503,6 +503,8 @@ $(document).ready(() => {
     let curInfoEl = null;
     let lastType = null;
     let idleTimer = null;
+    let thinkTimer = null;
+    let thinkStartTime = null;
 
     const twQueues = new Map();
 
@@ -611,7 +613,6 @@ $(document).ready(() => {
         title: $titleInput.val() || null,
         description: $descInput.val() || null,
         page_count: $pagesInput.val() ? parseInt($pagesInput.val(), 10) : null,
-        status: $statusSelect.val() || "active",
       };
     }
 
@@ -625,31 +626,65 @@ $(document).ready(() => {
       }
     }
 
+    function formatThinkTime(sec) {
+      if (sec < 60) {
+        return sec.toFixed(1) + "с";
+      }
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return m + "м " + String(s).padStart(2, "0") + "с";
+    }
+
     function addThinkBlock() {
       const id = "ai-t-" + Date.now();
       $logEntries.append(`
-          <div class="border-b border-gray-100 bg-gray-50/50 fade-in" id="${id}">
-            <div class="px-4 py-2 border-b border-gray-100/50 flex items-center gap-2 cursor-pointer select-none" data-toggle="${id}-b">
-              <svg class="ai-t-spin animate-spin w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Думает</span>
-              <svg class="w-3 h-3 text-gray-400 ml-auto transition-transform ai-t-chev" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </div>
-            <div id="${id}-b" class="px-4 py-3 max-h-40 overflow-y-auto">
-              <p class="ai-t-txt text-xs font-mono text-gray-500 leading-relaxed whitespace-pre-wrap typing-cursor"></p>
-            </div>
+        <div class="border-b border-gray-100 bg-gray-50/50 fade-in" id="${id}">
+          <div class="px-4 py-2 border-b border-gray-100/50 flex items-center gap-2 cursor-pointer select-none"
+               data-toggle="${id}-b">
+            <svg class="ai-t-spin animate-spin w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10"
+                      stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2
+                       5.291A7.962 7.962 0 014 12H0c0 3.042 1.135
+                       5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+              Думает
+            </span>
+
+            <span class="ai-t-timer text-[10px] font-mono text-gray-400 tabular-nums">
+              0.0с
+            </span>
+
+            <svg class="w-3 h-3 text-gray-400 ml-auto transition-transform ai-t-chev"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
           </div>
-        `);
+          <div id="${id}-b" class="px-4 py-3 max-h-40 overflow-y-auto">
+            <p class="ai-t-txt text-xs font-mono text-gray-500 leading-relaxed
+                      whitespace-pre-wrap typing-cursor"></p>
+          </div>
+        </div>
+      `);
+
       $(`[data-toggle="${id}-b"]`).on("click", function () {
         $(`#${id}-b`).toggleClass("hidden");
         $(this).find(".ai-t-chev").toggleClass("rotate-180");
       });
+
       curThinkEl = $(`#${id}`);
       scrollLog();
+
+      thinkStartTime = performance.now();
+      clearInterval(thinkTimer);
+      thinkTimer = setInterval(() => {
+        if (!curThinkEl) return;
+        const elapsed = (performance.now() - thinkStartTime) / 1000;
+        curThinkEl.find(".ai-t-timer").text(formatThinkTime(elapsed));
+      }, 100);
     }
 
     function appendThink(text) {
@@ -663,14 +698,26 @@ $(document).ready(() => {
 
     function endThink() {
       if (!curThinkEl) return;
+
+      clearInterval(thinkTimer);
+      thinkTimer = null;
+
+      if (thinkStartTime) {
+        const elapsed = (performance.now() - thinkStartTime) / 1000;
+        curThinkEl.find(".ai-t-timer").text(formatThinkTime(elapsed));
+        thinkStartTime = null;
+      }
+
       const p = curThinkEl.find(".ai-t-txt")[0];
       twFlush(p);
       curThinkEl.find(".ai-t-txt").removeClass("typing-cursor");
       curThinkEl.find(".ai-t-spin").removeClass("animate-spin").html(`
-          <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-          </svg>
-        `);
+        <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor"
+             viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      `);
 
       const id = curThinkEl.attr("id");
       if (id) {
@@ -751,6 +798,10 @@ $(document).ready(() => {
     }
 
     function hideWidget() {
+      clearInterval(thinkTimer);
+      thinkTimer = null;
+      thinkStartTime = null;
+
       $aiWidget.addClass("hidden");
       $logWrap.addClass("hidden");
       $logEntries.empty();
