@@ -40,20 +40,38 @@
 
         <form id="edit-book-form" class="hidden space-y-6">
 
-            <div id="ai-widget" class="hidden border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm transition-shadow hover:shadow-md">
-                <div class="bg-gray-50 border-b border-gray-200 px-4 py-2.5 flex justify-between items-center select-none">
+            <div id="ai-widget" class="hidden border border-gray-200 rounded-lg bg-white shadow-sm transition-shadow hover:shadow-md">
+                <div class="bg-gray-50 border-b border-gray-200 px-4 py-2.5 flex justify-between items-center select-none rounded-t-lg">
                     <div class="flex items-center gap-2.5">
-                        <div id="ai-logo" class="cursor-pointer p-1 bg-white border border-gray-200 rounded shadow-sm">
-                          <svg class="w-5 h-5 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
-                              <rect x="2" y="19" width="20" height="3" rx="0.8" fill="currentColor" opacity="0.9"/>
-                              <path d="M12 17V7c0 0-2.5-2-6-2-1.8 0-3 .4-3.5.6V17c.8-.3 2-.5 3.5-.5 3.2 0 6 1.5 6 1.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-                              <path d="M12 17V7c0 0 2.5-2 6-2 1.8 0 3 .4 3.5.6V17c-.8-.3-2-.5-3.5-.5-3.2 0-6 1.5-6 1.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-                              <circle cx="12" cy="2.8" r="2" fill="currentColor"/>
-                              <circle cx="7.5" cy="3.8" r="1" fill="currentColor"/>
-                              <circle cx="16.5" cy="3.8" r="1" fill="currentColor"/>
-                              <line x1="10.2" y1="3" x2="8.4" y2="3.6" stroke="currentColor" stroke-width="1"/>
-                              <line x1="13.8" y1="3" x2="15.6" y2="3.6" stroke="currentColor" stroke-width="1"/>
-                          </svg>
+                        <div class="relative group">
+                            <div id="ai-logo" class="cursor-pointer p-1 bg-white border border-gray-200 rounded shadow-sm">
+                                <svg class="w-5 h-5 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                    <rect x="2" y="19" width="20" height="3" rx="0.8" fill="currentColor" opacity="0.9"/>
+                                    <path d="M12 17V7c0 0-2.5-2-6-2-1.8 0-3 .4-3.5.6V17c.8-.3 2-.5 3.5-.5 3.2 0 6 1.5 6 1.5z"
+                                          fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                                    <path d="M12 17V7c0 0 2.5-2 6-2 1.8 0 3 .4 3.5.6V17c-.8-.3-2-.5-3.5-.5-3.2 0-6 1.5-6 1.5z"
+                                          fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="2.8" r="2" fill="currentColor"/>
+                                    <circle cx="7.5" cy="3.8" r="1" fill="currentColor"/>
+                                    <circle cx="16.5" cy="3.8" r="1" fill="currentColor"/>
+                                    <line x1="10.2" y1="3" x2="8.4" y2="3.6" stroke="currentColor" stroke-width="1"/>
+                                    <line x1="13.8" y1="3" x2="15.6" y2="3.6" stroke="currentColor" stroke-width="1"/>
+                                </svg>
+                            </div>
+
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2
+                                    px-3 py-1.5 rounded-md
+                                    bg-gray-900 text-white text-[11px] font-medium
+                                    whitespace-nowrap
+                                    opacity-0 invisible
+                                    group-hover:opacity-100 group-hover:visible
+                                    transition-all duration-200 ease-out
+                                    pointer-events-none
+                                    select-none">
+                            Сбросить чат
+                            <div class="absolute top-full left-1/2 -translate-x-1/2
+                                      border-4 border-transparent border-t-gray-900"></div>
+                            </div>
                         </div>
                         <span class="text-xs font-bold text-gray-700 tracking-[0.15em] uppercase">ИИ-помощник</span>
                     </div>
@@ -70,7 +88,7 @@
                     <div id="ai-log-entries"></div>
                 </div>
 
-                <div class="flex relative bg-white">
+                <div class="flex relative bg-white rounded-b-lg">
                     <input
                         type="text"
                         id="ai-input"
@@ -78,7 +96,7 @@
                         placeholder="Напишите задачу (например: 'Придумай драматичное описание')..."
                         autocomplete="off"
                     />
-                    <div class="flex border-l border-gray-100 items-center">
+                    <div class="flex border-l border-gray-100 items-center rounded-br-lg overflow-hidden">
                         <button type="button" id="ai-btn-stop"
                                 class="hidden px-5 py-2 h-full bg-white text-red-600 text-xs font-bold tracking-widest hover:bg-red-50 transition-colors flex items-center gap-2">
                             <span>СТОП</span>
